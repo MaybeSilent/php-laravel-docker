@@ -2,12 +2,12 @@ version: '3'
 services:
 
   #PHP Service
-  app:
+  phyapp:
     build:
       context: .
       dockerfile: Dockerfile
     image: digitalocean.com/php
-    container_name: app
+    container_name: phyapp
     restart: unless-stopped
     tty: true
     environment:
@@ -21,9 +21,9 @@ services:
       - app-network
 
   #Nginx Service
-  webserver:
+  phywebserver:
     image: nginx
-    container_name: webserver
+    container_name: phywebserver
     restart: unless-stopped
     tty: true
     ports:
@@ -36,20 +36,17 @@ services:
       - app-network
 
   #MySQL Service
-  db:
+  phydb:
     image: mysql:5.7.22
-    container_name: db
+    container_name: phydb
     restart: unless-stopped
     tty: true
     ports:
       - "3307:3306"
     environment:
-      MYSQL_DATABASE: laravel
-      MYSQL_ROOT_PASSWORD: 00000000
-      SERVICE_TAGS: dev
-      SERVICE_NAME: mysql
+      - MYSQL_ROOT_PASSWORD=root
     volumes:
-      - dbdata:/var/lib/mysql/
+      - ./mysql/data/:/var/lib/mysql/
       - ./mysql/my.cnf:/etc/mysql/my.cnf
     networks:
       - app-network
@@ -58,7 +55,4 @@ services:
 networks:
   app-network:
     driver: bridge
-#Volumes
-volumes:
-  dbdata:
-    driver: local
+ 
